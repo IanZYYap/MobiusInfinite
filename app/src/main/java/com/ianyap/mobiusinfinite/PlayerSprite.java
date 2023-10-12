@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.util.Log;
 
 public class PlayerSprite {
+    private final String TAG = "PlayerSprite";
     protected float mX,mY,mR, mVx, mVy, mWidth, mHeight;
     protected Paint mPaint;
     PlayerSprite(int x, int y, float vx, float vy, float r, int maxx, int maxy) {
@@ -31,13 +32,23 @@ public class PlayerSprite {
     }
 
     public void move(float dt) {
-        mX += mVx * dt;
-        mY += mVy * dt;
-        if (mX > mWidth) {
-            mX = mWidth;
+        Log.i(TAG, "" + mVx);
+        Log.i(TAG, "" + mVy);
+        mX += mVx * dt * 1000;
+        mY += mVy * dt * 1000;
+        if (mX > mWidth - mR) {
+            mX = mWidth - mR;
+            mVx = 0;
+        } else if (mX < 0 + mR) {
+            mX = 0 + mR;
+            mVx = 0;
         }
-        if (mY > mHeight) {
-            mY = mHeight;
+        if (mY > mHeight - mR) {
+            mY = mHeight - mR;
+            mVy = 0;
+        } else if (mY < 0 + mR) {
+            mY = 0 + mR;
+            mVy = 0;
         }
     }
 

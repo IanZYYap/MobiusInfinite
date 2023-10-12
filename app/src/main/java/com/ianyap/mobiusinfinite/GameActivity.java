@@ -28,6 +28,7 @@ public class GameActivity extends AppCompatActivity {
             while (!mPaused) {
                 Log.i(TAG, "Thread Running");
                 long dt = System.currentTimeMillis() - currentTime;
+                currentTime = System.currentTimeMillis();
                 // Update and refresh canvas
                 mGameView.update(dt / 1000f);
                 mGameView.postInvalidate();

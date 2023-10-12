@@ -60,6 +60,12 @@ public class GameView extends View {
                 Log.i("Test", "Touch Detected");
                 mX = event.getX();
                 mY = event.getY();
+                /*Simple left-right movement that works
+                if (mX > mWidth / 2) {
+                    mPlayerSprite.setVelocity(500f * (mX - mWidth/2)/mWidth, 0);
+                } else {
+                    mPlayerSprite.setVelocity(-500f * (mWidth/2-mX)/mWidth, 0);
+                }*/
                 mTouchTime = event.getEventTime();
                 return true;
             // User lets go
@@ -70,15 +76,27 @@ public class GameView extends View {
             // User drags
             case MotionEvent.ACTION_MOVE:
                 Log.i("Test", "Drag Detected");
+                /* Simple left-right movement that works
+                mX = event.getX();
+                mY = event.getY();
+                if (mX > mWidth / 2) {
+                    mPlayerSprite.setVelocity(2500f * (mX - mWidth/2)/mWidth, 0);
+                } else {
+                    mPlayerSprite.setVelocity(-2500f * (mWidth/2-mX)/mWidth, 0);
+                }*/
                 long time = event.getEventTime();
                 if (time == mTouchTime)
                     time = mTouchTime + 1;
                 float vX = (event.getX() - mX) / (time-mTouchTime);
                 float vY = (event.getY() - mY) / (time-mTouchTime);
-                mX = event.getX();
-                mY = event.getY();
                 // Tell the player sprite how fast to move
                 mPlayerSprite.setVelocity(vX, vY);
+
+                // To prevent values getting too big
+                mX = event.getX();
+                mY = event.getY();
+                mTouchTime = event.getEventTime();
+
                 return true;
         }
         return false;
