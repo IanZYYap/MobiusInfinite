@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -13,22 +13,32 @@ import androidx.annotation.Nullable;
 
 public class GameView extends View {
     private int mWidth, mHeight;
+    private float mX, mY;
+    private long mTouchTime;
+    private PlayerSprite mPlayerSprite;
 
     public GameView(Context context) {
         super(context);
+        init();
     }
 
     public GameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     // Add sprites to the game
     private void init() {
+        mPlayerSprite = new PlayerSprite(mWidth/2, mHeight/2, 0, 0, 50, mWidth, mHeight);
+    }
 
+    protected void update(float dt) {
+        mPlayerSprite.move(dt);
     }
 
     @Override
@@ -43,29 +53,41 @@ public class GameView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        /*if(mBubbles!=null)
-            mBubbles.touch(event);*/
-        return true;
+        // When dragging anywhere on the screen, move the Player
+        switch (event.getAction()){
+            // User presses down, set the original point they pressed
+            case MotionEvent.ACTION_DOWN:
+                Log.i("Test", "Touch Detected");
+                mX = event.getX();
+                mY = event.getY();
+                mTouchTime = event.getEventTime();
+                return true;
+            // User lets go
+            case MotionEvent.ACTION_UP:
+                // Stop the sprite from moving
+                mPlayerSprite.setVelocity(0, 0);
+                return true;
+            // User drags
+            case MotionEvent.ACTION_MOVE:
+                Log.i("Test", "Drag Detected");
+                long time = event.getEventTime();
+                if (time == mTouchTime)
+                    time = mTouchTime + 1;
+                float vX = (event.getX() - mX) / (time-mTouchTime);
+                float vY = (event.getY() - mY) / (time-mTouchTime);
+                mX = event.getX();
+                mY = event.getY();
+                // Tell the player sprite how fast to move
+                mPlayerSprite.setVelocity(vX, vY);
+                return true;
+        }
+        return false;
     }
     @Override
     protected void onDraw(Canvas c) {
         /*if(mBubbles!=null)
             mBubbles.draw(c);*/
         // TODO: Move to a separate class for sprites
-        Paint mPaint=new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(Color.argb(255, 0,0, 255));
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(8);
-        mPaint.setAntiAlias(true);
-        float sr=2f*10/3f;
-        RectF mArcRect=new RectF(-sr,-sr,sr,sr);
-
-        c.save();
-        c.translate(mWidth/2-sr,mHeight/2-sr);
-        c.drawCircle(0,0,10,mPaint);
-        c.scale(2/100f,2/100f);
-        //      c.drawText("Hello",-mR,mR+32,mPaint);
-        c.drawArc(mArcRect,300,30,false, mPaint);
-        c.restore();
+        mPlayerSprite.draw(c);
     }
 }
