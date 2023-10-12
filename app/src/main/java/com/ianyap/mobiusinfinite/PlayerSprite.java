@@ -34,8 +34,8 @@ public class PlayerSprite {
     public void move(float dt) {
         Log.i(TAG, "" + mVx);
         Log.i(TAG, "" + mVy);
-        mX += mVx * dt * 1000;
-        mY += mVy * dt * 1000;
+        //mX += mVx * dt * 5;
+        //mY += mVy * dt * 5;
         if (mX > mWidth - mR) {
             mX = mWidth - mR;
             mVx = 0;
@@ -56,4 +56,9 @@ public class PlayerSprite {
         mVx = vx;
         mVy = vy;
     }
+
+    public float getY() { return mY; }
+    public float getX() { return mX; }
+
+    public float getR() { return mR; }
 }

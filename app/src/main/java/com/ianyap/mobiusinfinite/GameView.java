@@ -84,19 +84,28 @@ public class GameView extends View {
                 } else {
                     mPlayerSprite.setVelocity(-2500f * (mWidth/2-mX)/mWidth, 0);
                 }*/
-                long time = event.getEventTime();
-                if (time == mTouchTime)
-                    time = mTouchTime + 1;
-                float vX = (event.getX() - mX) / (time-mTouchTime);
-                float vY = (event.getY() - mY) / (time-mTouchTime);
-                // Tell the player sprite how fast to move
-                mPlayerSprite.setVelocity(vX, vY);
-
-                // To prevent values getting too big
                 mX = event.getX();
                 mY = event.getY();
                 mTouchTime = event.getEventTime();
-
+                if (mX < mPlayerSprite.getR())
+                    mX = mPlayerSprite.getR();
+                if (mX > getWidth() - mPlayerSprite.getR())
+                    mX = getWidth() - mPlayerSprite.getR();
+                if (mY < mPlayerSprite.getR())
+                    mY = mPlayerSprite.getR();
+                if (mY > getHeight() - mPlayerSprite.getR())
+                    mY = getHeight() - mPlayerSprite.getR();
+                long time = event.getEventTime();
+                if (time == mTouchTime)
+                    time = mTouchTime + 1;
+                float vX = (mX - mPlayerSprite.getX()) / (time-mTouchTime);
+                float vY = (mY - mPlayerSprite.getY()) / (time-mTouchTime);
+                // Tell the player sprite how fast to move
+                mPlayerSprite.setVelocity(vX, vY);
+                mTouchTime = time;
+                // To prevent values getting too big
+                mPlayerSprite.mX = mX;
+                mPlayerSprite.mY = mY;
                 return true;
         }
         return false;
